@@ -65,7 +65,6 @@ El alcance incorpora el contexto comercial desde la campaña y la consulta inici
 * Las cuatro categorías de cemento, fierro, agregados y ladrillos pueden cotizarse y tratarse con stock insuficiente, pero sin falsa reserva ni promesa logística irrevocable si falta suministro.
 * En el modelo simplificado, el stock físico apto se expresa como reservado más disponible; la demanda no cubierta se mantiene separada.
 * El despacho programado desde el día siguiente y la espera en obra de 30 minutos están sujetos a consenso, calendario y excepciones pendientes.
-* 
 
 ## 5. Evolución
 

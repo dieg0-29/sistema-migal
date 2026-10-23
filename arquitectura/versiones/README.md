@@ -7,7 +7,7 @@ Esta carpeta registra cómo cambia la arquitectura de Ferre & Inversiones MIGAL 
 | ID | Sistema incorporado | Ajustes (CA) | Archivo |
 |---|---|---|---|
 | VER-01 | ERP (base) | — | [VER-01-erp-base.md](VER-01-erp-base.md) |
-| VER-02 | CRM | CA-01 a CA-08 | [VER-02-crm.md](VER-02-crm.md) |
+| VER-02 | CRM | CA-01 a CA-10 | [VER-02-crm.md](VER-02-crm.md) |
 
 ## Reglas de uso
 
