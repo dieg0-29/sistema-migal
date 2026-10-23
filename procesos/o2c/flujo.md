@@ -4,7 +4,7 @@
 
 * **Fecha:** 23/10/2026
 * **Versión:** 0.3
-* **Sistema:** ERP (Odoo 18 Community: Ventas, Punto de Venta, Inventario y contabilidad básica) y KeyFacil (externo)
+* **Sistema:** ERP (Odoo 18 Community: Ventas, Punto de Venta, Inventario y Facturación, según [módulos y dependencias](../../arquitectura/base/modulos-y-dependencias.md)) y KeyFacil (externo)
 
 ## 2. Propósito
 
