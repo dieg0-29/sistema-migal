@@ -1,5 +1,6 @@
 # Mapa de procesos de nivel 1
 
+**Fecha:** 23/10/2026.
 **Estado:** clasificación TO-BE propuesta; no acredita departamentos formales ni procesos aprobados. Fuente de contexto: [FN-01/FN-02](../../fuentes/fuentes-negocio.md).
 
 ## Procesos y propósito
@@ -7,10 +8,10 @@
 | Grupo | Proceso funcional | Entrada → salida | Responsabilidad funcional |
 |---|---|---|---|
 | Dirección | Planificación comercial y decisiones del negocio | Necesidades/resultados → prioridades y condiciones | Propietarios |
-| Core | Gestión comercial CRM | Consulta → propuesta y seguimiento | R-ATN / R-PRO |
-| Core | Order to Cash | Necesidad comercial → entrega, cobro y cierre/excepción | R-ATN, R-ALM, R-PRO y R-FAC |
-| Core | Procure to Pay | Necesidad de reposición → recepción y pago conciliado | Propietarios, almacén y administración funcional |
-| Core compartido | Gestión de inventario | Recepciones, salidas y conteos → existencias y diferencias trazables | Personal operativo / propietarios |
+| Core | Gestión comercial CRM | Interés/consulta → cotización aceptada, perdida o cancelada | R-ATN / R-PRO |
+| Core | Order to Cash | Necesidad comercial → entrega y cobro conciliados, o excepción documentada | R-ATN, R-ALM, R-PRO y R-FAC |
+| Core | Procure to Pay | Necesidad de abastecimiento → recepción y pago conciliados, o excepción | Propietarios, almacén y administración funcional |
+| Core compartido | Gestión de inventario | Entradas, salidas y reservas → existencia confiable por ubicación | Personal operativo / propietarios |
 | Soporte | Registro económico y conciliación | Operaciones/comprobantes → saldos y conciliaciones | Propietarios y apoyo contable según función validada |
 | Soporte | Datos, accesos y continuidad | Necesidades de información/acceso → registros confiables y servicio recuperable | Propietarios; soporte técnico por definir |
 
@@ -41,10 +42,15 @@ Las reglas de todos los procesos están en el [catálogo de reglas](../catalogo-
 
 ## Puntos de control compartidos
 
+- La aceptación del cliente no equivale a la confirmación del ERP.
+- La solicitud de pedido y la respuesta del ERP deben quedar trazables.
+- Las existencias disponibles, las reservas y las promesas de entrega deben distinguirse de las ventas confirmadas.
 - Misma identidad de producto y unidad entre oferta, abastecimiento y movimiento.
 - Aceptación y autorizaciones documentadas antes de compromisos que las requieran.
 - Diferencias de recepción/entrega visibles, sin ajustar silenciosamente cantidades.
 - Comprobantes y pagos separados de documentos operativos y conciliados por referencia.
+- Una misma persona puede desempeñar varias funciones; esta clasificación no implica la existencia de departamentos formales.
+- La agrupación de procesos es analítica y no constituye una estructura organizacional aprobada.
 
 ## Pendientes de validación
 

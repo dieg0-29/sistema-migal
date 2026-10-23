@@ -1,8 +1,12 @@
 # Alcance de la solución — Ferre & Inversiones MIGAL
 
+**Estado**: propuesta TO-BE actualizada por el equipo el 22/10/2026.
+
 ## 1. Objetivo
 
 Organizar los procesos, datos, aplicaciones y controles de Ferre & Inversiones MIGAL para reducir la fragmentación de su información comercial y operativa. La solución se construye de forma progresiva, actualmente el alcance comprende los sistemas ERP y CRM.
+
+El alcance incorpora el contexto comercial desde la campaña y la consulta inicial hasta la cotización aceptada y su paso al ERP. También contempla el modelado de la ejecución operativa, el abastecimiento y el inventario, sin afirmar que todos los módulos o automatizaciones estén implementados.
 
 ## 2. Sistemas que componen la solución
 
@@ -23,11 +27,15 @@ Organizar los procesos, datos, aplicaciones y controles de Ferre & Inversiones M
 * Inventario en tres puntos físicos: Tienda, Almacén 1 y Almacén 2.
 * Venta mayorista mediante pedido y venta de mostrador mediante punto de venta.
 * Registro contable básico mediante módulos de la comunidad.
+* Modelado de O2C hasta programación de entrega, traslado con documentos, conformidad, cobro y cierre, sin presentarlo como prueba de implementación completa.
+* Modelado de P2P documental para necesidades de abastecimiento, aprobación, oferta de proveedor, orden de compra documental, recepción, factura de proveedor y pago.
 
 **Excluido**
 
 * Módulo de Compras; el abastecimiento puede modelarse como proceso sin implantarse como módulo.
 * Emisión fiscal desde Odoo; la realiza KeyFacil.
+* Reservas, rebajas instantáneas de inventario o permisos operativos no verificados mediante prueba.
+* Automatización de la programación logística, la entrega, la facturación y el cobro cuando solo formen parte del modelo de negocio.
 
 ### 3.2. CRM
 
@@ -38,6 +46,8 @@ Organizar los procesos, datos, aplicaciones y controles de Ferre & Inversiones M
 * Registro del lead, cuenta, contactos y obra.
 * Calificación de la oportunidad.
 * Elaboración de la cotización, versiones y excepciones de precio.
+* Seguimiento del compromiso comercial y de la decisión del cliente.
+* Contrato de la solicitud de pedido con datos, estados y respuestas aceptada, rechazada o condicionada.
 * Paso de la cotización aceptada al ERP ([INT-01](../integraciones/INT-01-CRM-ERP.md)).
 
 **Excluido**
@@ -51,6 +61,11 @@ Organizar los procesos, datos, aplicaciones y controles de Ferre & Inversiones M
 * No se desarrollan APIs, conectores ni contratos técnicos de mensajes entre sistemas.
 * La representación lógica de Tienda, Almacén 1 y Almacén 2 requiere una decisión.
 * La necesidad de un complemento contable debe precisarse al revisar [ADR-003](../decisiones/ADR-003-contabilidad.md).
+* O2C completo considera programación de entregas por viaje, traslado con documentos, conformidad, comprobante al primer evento (pago total o entrega en operación ordinaria), cobros y cierre. P2P contempla tres causas de necesidad —mínimo, venta y programa— y una recepción y factura que no necesariamente son secuenciales.
+* Las cuatro categorías de cemento, fierro, agregados y ladrillos pueden cotizarse y tratarse con stock insuficiente, pero sin falsa reserva ni promesa logística irrevocable si falta suministro.
+* En el modelo simplificado, el stock físico apto se expresa como reservado más disponible; la demanda no cubierta se mantiene separada.
+* El despacho programado desde el día siguiente y la espera en obra de 30 minutos están sujetos a consenso, calendario y excepciones pendientes.
+* 
 
 ## 5. Evolución
 
