@@ -12,10 +12,12 @@ El alcance incorpora el contexto comercial desde la campaña y la consulta inici
 
 | Sistema | Plataforma | Rol en la solución | Decisión de respaldo |
 |---|---|---|---|
-| ERP | Odoo 18 Community | Base operativa: ventas, punto de venta, inventario y contabilidad básica | [ADR-001](../decisiones/ADR-001-seleccion-erp.md), [ADR-002](../decisiones/ADR-002-version-y-edicion.md), [ADR-003](../decisiones/ADR-003-contabilidad.md) |
+| ERP | Odoo 18 Community | Base operativa: ventas, punto de venta, inventario y facturación con contabilidad básica | [ADR-001](../decisiones/ADR-001-seleccion-erp.md), [ADR-002](../decisiones/ADR-002-version-y-edicion.md), [ADR-003](../decisiones/ADR-003-contabilidad.md) |
 | CRM | Odoo 18 Community (misma instancia) | Gestión comercial: campañas, contactos, leads, oportunidades y cotizaciones | [ADR-004](../decisiones/ADR-004-odoo-community-fronteras-crm-erp.md), [INT-01](../integraciones/INT-01-CRM-ERP.md) |
 | KeyFacil | Externo | Emisión de comprobantes electrónicos | [ADR-004](../decisiones/ADR-004-odoo-community-fronteras-crm-erp.md) |
 | WhatsApp / teléfono | Externo | Canales de interacción con clientes y maestros de obra | — |
+
+Los módulos de Odoo que componen el ERP y el CRM, sus dependencias obligatorias y los módulos puente que se instalan automáticamente se detallan en [módulos y dependencias](modulos-y-dependencias.md).
 
 ## 3. Alcance por sistema
 
@@ -26,14 +28,16 @@ El alcance incorpora el contexto comercial desde la campaña y la consulta inici
 * Catálogo de productos y precios.
 * Inventario en tres puntos físicos: Tienda, Almacén 1 y Almacén 2.
 * Venta mayorista mediante pedido y venta de mostrador mediante punto de venta.
-* Registro contable básico mediante módulos de la comunidad.
+* Facturación (`account`), instalada obligatoriamente como dependencia de Ventas y Punto de Venta, para pagos, diarios y referencia del comprobante.
+* Registro contable básico complementado con módulos de la comunidad.
+* Contactos (`contacts`) como maestro único de cuentas y contactos, compartido con el CRM.
 * Modelado de O2C hasta programación de entrega, traslado con documentos, conformidad, cobro y cierre, sin presentarlo como prueba de implementación completa.
 * Modelado de P2P documental para necesidades de abastecimiento, aprobación, oferta de proveedor, orden de compra documental, recepción, factura de proveedor y pago.
 
 **Excluido**
 
 * Módulo de Compras; el abastecimiento puede modelarse como proceso sin implantarse como módulo.
-* Emisión fiscal desde Odoo; la realiza KeyFacil.
+* Emisión fiscal desde Odoo; la realiza KeyFacil. Aunque Facturación esté instalada, sus facturas internas no sustituyen el comprobante electrónico.
 * Reservas, rebajas instantáneas de inventario o permisos operativos no verificados mediante prueba.
 * Automatización de la programación logística, la entrega, la facturación y el cobro cuando solo formen parte del modelo de negocio.
 
@@ -59,6 +63,7 @@ El alcance incorpora el contexto comercial desde la campaña y la consulta inici
 
 * El CRM conserva el contexto y el compromiso comercial; el ERP gestiona la ejecución desde el pedido confirmado ([INT-01](../integraciones/INT-01-CRM-ERP.md)).
 * No se desarrollan APIs, conectores ni contratos técnicos de mensajes entre sistemas.
+* Instalar una aplicación implica instalar sus dependencias: el CRM instala Contactos y el Punto de Venta instala Inventario y Facturación. Ninguna aplicación del alcance obliga a instalar Compras.
 * La representación lógica de Tienda, Almacén 1 y Almacén 2 requiere una decisión.
 * La necesidad de un complemento contable debe precisarse al revisar [ADR-003](../decisiones/ADR-003-contabilidad.md).
 * O2C completo considera programación de entregas por viaje, traslado con documentos, conformidad, comprobante al primer evento (pago total o entrega en operación ordinaria), cobros y cierre. P2P contempla tres causas de necesidad —mínimo, venta y programa— y una recepción y factura que no necesariamente son secuenciales.

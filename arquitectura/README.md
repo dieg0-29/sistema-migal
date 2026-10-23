@@ -22,6 +22,7 @@ Reúne la información que sustenta las decisiones de arquitectura:
 - contexto de la empresa;
 - alcance de la solución;
 - comparación de alternativas ERP;
+- [módulos de Odoo y dependencias obligatorias](base/modulos-y-dependencias.md);
 - riesgos y controles relacionados con la implementación.
 
 ### `seguridad/`
@@ -55,6 +56,8 @@ vistas/c4/
 ├── fuentes/   # archivos editables
 └── render/    # resultados generados
 ```
+
+La vista de dependencias entre módulos sigue la misma separación en `vistas/dependencias/`.
 
 Cuando se actualiza una fuente, debe regenerarse también el render correspondiente.
 
