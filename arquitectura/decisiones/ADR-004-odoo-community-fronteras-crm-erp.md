@@ -2,7 +2,8 @@
 
 ## 1. Metadatos
 
-* **Fecha:** 16/10/2026
+* **Fecha:** 22/10/2026
+* **Version:** V2
 * **Estado:** **Propuesto**
 * **Autores:** Gabriel Martínez
 
@@ -25,8 +26,15 @@ El problema arquitectónico consiste en organizar el recorrido de la informació
 * En el alcance actual no se exige desarrollar una integración técnica con KeyFacil, WhatsApp u otros sistemas externos.
 * Las reglas definitivas de descuentos, créditos, vigencia de cotizaciones y reservas de stock todavía deben validarse con MIGAL.
 * El comportamiento exacto de Odoo debe comprobarse en la versión y configuración utilizada por el equipo.
+* La decisión distingue interés del cliente, cotización aceptada, solicitud de pedido, respuesta ERP y confirmación operativa. 
 
 ## 4. Opciones Consideradas
+
+| Opción | Ventaja | Desventaja |
+|---|---|---|
+| A. CRM y ERP separados | Fronteras técnicas independientes | Integra datos y costes adicionales no sustentados |
+| B. Un Odoo sin responsabilidades | Menor esfuerzo documental inicial | Confunde precios, reservas, aprobaciones y resultados |
+| **C. Un Odoo con fronteras funcionales y evidencia** | Información y estados trazables, menor complejidad relativa | Requiere procesos, responsables, pruebas y disciplina documental |
 
 ### Opción A: CRM externo y ERP separado
 
@@ -85,6 +93,8 @@ La propuesta establece las siguientes fronteras:
 5. **KeyFacil:** emisión de boletas y facturas, manteniendo una referencia trazable en Odoo.
 
 Esta decisión no implica que todos los controles estén implementados ni que exista una integración técnica con KeyFacil.
+
+Cuando cliente acepta cotización, se solicita validación del pedido. ERP responde aceptada, rechazada o condicionada con motivo, autor y siguiente acción. Pedidos con faltante de cemento, fierro, agregados y ladrillos originan evaluación de abastecimiento; fecha prometida puede mantenerse condicionada hasta verificación. Comercial comunica, logística evalúa fecha y propietario aprueba excepciones, con asignación real aún pendiente.
 
 ## 6. Justificación
 
