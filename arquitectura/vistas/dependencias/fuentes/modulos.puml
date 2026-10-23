@@ -1,0 +1,75 @@
+@startuml
+title Dependencias entre módulos - Odoo 18 Community (manifiestos rama 18.0)
+
+skinparam componentStyle rectangle
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam ArrowColor #555555
+skinparam linetype ortho
+
+skinparam rectangle {
+    BackgroundColor<<app>> #438DD5
+    FontColor<<app>> #FFFFFF
+    BorderColor<<app>> #2E6295
+    BackgroundColor<<nuevo>> #D9534F
+    FontColor<<nuevo>> #FFFFFF
+    BorderColor<<nuevo>> #A94442
+    BackgroundColor<<puente>> #F0AD4E
+    BorderColor<<puente>> #C77C0E
+    BackgroundColor<<tecnico>> #EEEEEE
+    BorderColor<<tecnico>> #999999
+    BackgroundColor<<externo>> #FFFFFF
+    BorderColor<<externo>> #999999
+}
+
+package "Aplicaciones seleccionadas" {
+    rectangle "CRM\n<size:10>crm</size>" as crm <<app>>
+    rectangle "Ventas\n<size:10>sale_management -> sale</size>" as sale <<app>>
+    rectangle "Punto de Venta\n<size:10>point_of_sale</size>" as pos <<app>>
+    rectangle "Inventario\n<size:10>stock</size>" as stock <<app>>
+}
+
+package "Dependencias obligatorias" {
+    rectangle "Contactos\n<size:10>contacts (res.partner en base)</size>\n<size:10>Requerido por crm (CA-10)</size>" as contacts <<nuevo>>
+    rectangle "Facturación\n<size:10>account (via account_payment)</size>\n<size:10>Requerido por sale y point_of_sale</size>" as account <<nuevo>>
+    rectangle "Técnicos de crm\n<size:10>sales_team, calendar, utm,</size>\n<size:10>phone_validation, mail, resource</size>" as crmdeps <<tecnico>>
+    rectangle "Producto\n<size:10>product, uom</size>" as product <<tecnico>>
+}
+
+package "Puentes de instalación automática" {
+    rectangle "sale_crm\n<size:10>cotización desde la oportunidad</size>" as sale_crm <<puente>>
+    rectangle "stock_account\n<size:10>valoración de inventario</size>" as stock_account <<puente>>
+    rectangle "sale_stock\n<size:10>entrega al confirmar el pedido</size>" as sale_stock <<puente>>
+    rectangle "pos_sale\n<size:10>liquidar pedidos en el POS</size>" as pos_sale <<puente>>
+}
+
+rectangle "Extensión contable comunitaria\n<size:10>OCA / Odoo Mates (ADR-003)</size>\n<size:10>opcional, por revisar</size>" as om <<externo>>
+rectangle "Compras\n<size:10>purchase</size>\n<size:10>excluido; ninguna app lo requiere</size>" as purchase <<externo>>
+
+crm --> contacts : depende
+crm --> crmdeps : depende
+sale --> account : depende
+sale --> crmdeps : sales_team, utm
+pos --> stock_account : depende
+stock --> product : depende
+stock_account --> stock : depende
+stock_account --> account : depende
+om ..> account : extiende
+
+sale_crm ..> sale : auto
+sale_crm ..> crm : auto
+sale_stock ..> sale : auto
+sale_stock ..> stock_account : auto
+pos_sale ..> pos : auto
+pos_sale ..> sale : auto
+
+legend right
+    |= Color |= Significado |
+    |<#438DD5>| Aplicación seleccionada en el alcance |
+    |<#D9534F>| Dependencia obligatoria no considerada antes |
+    |<#F0AD4E>| Módulo puente (auto_install) |
+    |<#EEEEEE>| Dependencia técnica sin configuración propia |
+    | Línea continua | depends (obligatoria) |
+    | Línea discontinua | auto_install o extensión |
+endlegend
+@enduml

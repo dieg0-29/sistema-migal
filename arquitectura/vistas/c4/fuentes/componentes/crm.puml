@@ -7,18 +7,22 @@ Person(prop, "Propietarios (R-PRO)", "Deciden descuento excepcional, promesa y c
 Person(trab, "Trabajadores (R-ATN)", "Registra lead, interacción y próxima acción")
 System_Ext(whatsapp, "WhatsApp / Teléfono / Presencial", "Canal")
 
-Container_Boundary(crm_app, "CRM (crm + utm + contacts)") {
-    Component(partner, "res.partner", "Modelo ORM", "Cuenta (cliente/obra) y contactos con rol: dueño de obra, maestro, receptor; dirección de obra")
-    Component(utm, "utm.campaign / utm.source / utm.medium", "Modelos ORM", "Campaña (p.ej. volanteo [S]), fuente (referido maestro), medio (WhatsApp)")
+Container_Boundary(crm_app, "CRM (crm, con dependencias sales_team, calendar, utm, mail)") {
+    Component(utm, "utm.campaign / utm.source / utm.medium", "Modelos ORM (utm)", "Campaña (p.ej. volanteo [S]), fuente (referido maestro), medio (WhatsApp)")
     Component(lead, "crm.lead", "Modelo ORM", "Lead y oportunidad: necesidad, probabilidad, competidor (etiqueta/nota), responsable")
     Component(stage, "crm.stage", "Modelo ORM", "Nuevo → Calificado → Propuesta → Ganado / Perdido")
-    Component(activity, "mail.activity + chatter", "Modelos ORM", "Interacciones, próxima acción y registro de decisiones")
+    Component(team, "crm.team", "Modelo ORM (sales_team)", "Equipo de venta y responsable de seguimiento")
+    Component(activity, "mail.activity + chatter", "Modelos ORM (mail, calendar)", "Interacciones, próxima acción, reuniones y registro de decisiones")
     Component(lost, "crm.lost.reason", "Modelo ORM", "Motivo de no adjudicación: precio de competencia, flete, crédito, sin respuesta")
 }
 
-Container_Boundary(sale_app, "Ventas (sale + sale_crm)") {
+Container_Boundary(contacts_app, "Contactos (contacts; dependencia obligatoria de crm, CA-10)") {
+    Component(partner, "res.partner", "Modelo ORM (base)", "Cuenta (cliente/obra) y contactos con rol: dueño de obra, maestro, receptor; dirección de obra. Compartido con Ventas, POS y Facturación")
+}
+
+Container_Boundary(sale_app, "Ventas (sale_management + puente sale_crm)") {
     Component(quote, "sale.order (estado borrador / enviado)", "Modelo ORM", "Cotización: líneas, precio, descuento, criterio de vigencia y comprobante previsto")
-    Component(pricelist, "product.pricelist", "Modelo ORM", "Precio de referencia; descuento visible por línea")
+    Component(pricelist, "product.pricelist", "Modelo ORM (product)", "Precio de referencia; descuento visible por línea")
     Component(confirm, "action_confirm()", "Método", "FRONTERA CRM a ERP (INT-01, F-02): convierte la cotización aceptada en pedido")
 }
 Container(stock, "Inventario (stock.quant)", "Módulo stock", "Consulta de disponibilidad por almacén")
@@ -26,10 +30,12 @@ Container(stock, "Inventario (stock.quant)", "Módulo stock", "Consulta de dispo
 Rel(whatsapp, trab, "1. Llega consulta / lista")
 Rel(trab, lead, "2. Registra lead")
 Rel(lead, utm, "Origen")
-Rel(lead, partner, "3. Vincula cuenta y contacto")
+Rel(lead, team, "Asigna equipo y responsable")
+Rel(lead, partner, "3. Busca o vincula cuenta y contacto (RN-01)")
 Rel(lead, stage, "4. Califica → oportunidad")
 Rel(trab, activity, "Registra interacción y próxima acción")
-Rel(lead, quote, "5. Nueva cotización")
+Rel(lead, quote, "5. Nueva cotización (sale_crm)")
+Rel(quote, partner, "Cliente de la cotización")
 Rel(quote, pricelist, "Toma precio de referencia")
 Rel(quote, stock, "Consulta disponibilidad (sin reservar)")
 Rel(prop, quote, "6. Decide descuento, promesa y comprobante")

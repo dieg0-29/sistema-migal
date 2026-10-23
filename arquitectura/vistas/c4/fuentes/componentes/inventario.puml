@@ -6,14 +6,16 @@ title Diagrama de Componentes (Nivel 3) - Gestión de Inventario
 Person(alm, "Personal de almacén (R-ALM)", "Registra recepciones, despachos, transferencias y conteos")
 Person(prop, "Propietarios (R-PRO)", "Autorizan ajustes y deciden ante faltantes (SOD-03)")
 
-Container(sales_mod, "Ventas", "Módulo sale", "Pedidos confirmados")
-Container(pos_mod, "Punto de Venta", "Módulo point_of_sale", "Ventas de mostrador en la Tienda")
-Container(acc_mod, "Contabilidad básica", "Módulo de la comunidad (ADR-003)", "Valoración del inventario por validar (CA-07)")
+Container(sales_mod, "Ventas", "Módulos sale_management + sale_stock", "Pedidos confirmados que generan entregas")
+Container(pos_mod, "Punto de Venta", "Módulo point_of_sale (requiere stock_account)", "Ventas de mostrador en la Tienda")
+Container(acc_mod, "Facturación", "Módulo account (+ extensión comunitaria, ADR-003)", "Asientos de valoración por validar (CA-07)")
 
-Container_Boundary(inv_app, "Inventario (stock)") {
+Container_Boundary(inv_app, "Inventario (stock + stock_account)") {
+    Component(product, "product.product / product.category", "Modelos ORM (product)", "Catálogo; la categoría define el método de valoración")
     Component(stock_picking, "stock.picking", "Modelo ORM", "Recepciones, entregas, transferencias y ajustes")
     Component(stock_move, "stock.move", "Modelo ORM", "Líneas de cada movimiento")
     Component(stock_quant, "stock.quant", "Modelo ORM", "Existencias por ubicación: Tienda, Almacén 1 y Almacén 2")
+    Component(valuation, "stock.valuation.layer", "Modelo ORM (stock_account)", "Capa de valoración de cada movimiento")
 }
 
 ContainerDb(db, "Base de datos", "PostgreSQL", "Historial de movimientos")
@@ -22,10 +24,12 @@ Rel(alm, stock_picking, "1. Registra recepción con cantidad real (RN-19)", "Nav
 Rel(alm, stock_picking, "2. Prepara y valida entregas y transferencias (RN-10)", "Navegador")
 Rel(alm, stock_quant, "3. Cuenta y reporta diferencias", "Navegador")
 Rel(prop, stock_picking, "4. Autoriza el ajuste (RN-21, SOD-03)", "Navegador")
-Rel(sales_mod, stock_picking, "Entrega generada al confirmar el pedido")
+Rel(sales_mod, stock_picking, "Entrega generada al confirmar el pedido (sale_stock)")
 Rel(pos_mod, stock_picking, "Salida automática e inmediata por cada venta")
 Rel(stock_picking, stock_move, "Detalla")
+Rel(stock_move, product, "Producto")
 Rel(stock_move, stock_quant, "Actualiza existencias por ubicación")
-Rel(stock_move, acc_mod, "Valoración (por validar)")
+Rel(stock_move, valuation, "Registra valor")
+Rel(valuation, acc_mod, "Asiento contable (por validar)")
 Rel(stock_quant, db, "Persiste")
 @enduml

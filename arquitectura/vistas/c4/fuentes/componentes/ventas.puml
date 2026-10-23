@@ -15,29 +15,38 @@ Container_Boundary(crm_app, "CRM (crm + sale_crm)") {
     Component(crm_lead, "crm.lead", "Modelo ORM", "Oportunidad con cuenta, contactos, fuente y probabilidad")
 }
 
-Container_Boundary(sales_app, "Ventas y Punto de Venta (sale, point_of_sale)") {
-    Component(sale_order, "sale.order", "Modelo ORM", "Cotización aceptada que pasa a pedido confirmado; conserva la versión aceptada")
-    Component(action_confirm, "action_confirm()", "Método", "FRONTERA CRM a ERP (INT-01, F-02): confirma el pedido")
-    Component(pos_order, "pos.order / pos.session", "Modelos ORM", "Venta de mostrador; el stock se descuenta automáticamente en cada venta")
+Container_Boundary(contacts_app, "Contactos (contacts)") {
+    Component(partner, "res.partner", "Modelo ORM (base)", "Cliente del pedido y de la venta de mostrador; maestro compartido")
 }
 
-Container_Boundary(inv_app, "Inventario (stock)") {
+Container_Boundary(sales_app, "Ventas y Punto de Venta (sale_management, point_of_sale; puentes sale_stock y pos_sale)") {
+    Component(sale_order, "sale.order", "Modelo ORM", "Cotización aceptada que pasa a pedido confirmado; conserva la versión aceptada")
+    Component(action_confirm, "action_confirm()", "Método (sale; entrega por sale_stock)", "FRONTERA CRM a ERP (INT-01, F-02): confirma el pedido y genera la entrega")
+    Component(pos_order, "pos.order / pos.session", "Modelos ORM", "Venta de mostrador; el stock se descuenta automáticamente en cada venta. pos_sale permite liquidar pedidos (uso por decidir)")
+}
+
+Container_Boundary(inv_app, "Inventario (stock + stock_account)") {
     Component(stock_picking, "stock.picking", "Modelo ORM", "Entrega por ubicación (Tienda, Almacén 1, Almacén 2); registra entregado y pendiente")
 }
 
-Container_Boundary(acc_app, "Contabilidad básica (módulo de la comunidad, ADR-003)") {
-    Component(ref_fiscal, "Referencia del comprobante y pago", "Registro interno", "Referencia de KeyFacil, cobro y saldo; no emite comprobantes. Asientos automáticos por validar (CA-07)")
+Container_Boundary(acc_app, "Facturación (account; dependencia obligatoria de sale y point_of_sale)") {
+    Component(payment, "account.payment / diarios", "Modelos ORM", "Cobro, saldo y referencia del comprobante de KeyFacil")
+    Component(move, "account.move", "Modelo ORM", "Factura interna de Odoo; no es comprobante fiscal. Uso por decidir (RSK-10)")
 }
 
 Rel(crm_lead, sale_order, "1. Cotización desde la oportunidad (sale_crm)")
+Rel(sale_order, partner, "Cliente")
 Rel(atn, action_confirm, "2. Confirma con la versión aceptada (RN-08)", "Navegador")
 Rel(sale_order, action_confirm, "Ejecuta")
-Rel(action_confirm, stock_picking, "3. Genera la entrega y reserva por ubicación (RN-09)")
+Rel(action_confirm, stock_picking, "3. Genera la entrega y reserva por ubicación (sale_stock, RN-09)")
 Rel(prop, sale_order, "Decide crédito o faltante (RN-15)", "Navegador")
 Rel(alm, stock_picking, "4. Prepara y valida la entrega real (RN-10)", "Navegador")
 Rel(atn, pos_order, "Venta y cobro en mostrador", "Navegador")
-Rel(pos_order, stock_picking, "Salida automática e inmediata por venta")
+Rel(pos_order, partner, "Cliente (opcional)")
+Rel(pos_order, stock_picking, "Salida automática e inmediata por venta (stock_account)")
+Rel(pos_order, payment, "Pagos de la sesión de caja")
 Rel(prop, keyfacil, "5. Emite boleta o factura", "Manual")
-Rel(prop, ref_fiscal, "6. Registra referencia, cobro y conciliación (RN-11, RN-12)", "Navegador")
-Rel(ref_fiscal, sale_order, "Vincula con el pedido")
+Rel(prop, payment, "6. Registra referencia, cobro y conciliación (RN-11, RN-12)", "Navegador")
+Rel(payment, sale_order, "Vincula con el pedido")
+Rel(sale_order, move, "Facturable; no se emite desde Odoo")
 @enduml

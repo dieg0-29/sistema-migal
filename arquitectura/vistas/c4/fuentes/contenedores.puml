@@ -12,16 +12,18 @@ System_Boundary(odoo_sys, "Odoo 18 Community (instancia única)") {
     Container(web, "Cliente web Odoo", "JavaScript / OWL", "Interfaz única para todos los usuarios")
 
     Boundary(crm_b, "Dominio CRM") {
-        Container(crm_mod, "CRM", "Módulo crm", "Leads, oportunidades, etapas, probabilidad, actividades y motivos de pérdida")
-        Container(utm_mod, "Marketing / UTM", "Módulo utm", "Campaña, fuente (referido maestro) y medio (WhatsApp, teléfono, presencial)")
-        Container(contact_mod, "Contactos", "Módulo contacts (res.partner)", "Cuenta (cliente/obra) y contactos (dueño, maestro, receptor)")
+        Container(crm_mod, "CRM", "Módulo crm (+ sales_team, calendar, utm)", "Leads, oportunidades, etapas, probabilidad, actividades y motivos de pérdida")
+        Container(utm_mod, "Marketing / UTM", "Módulo utm (dependencia de crm)", "Campaña, fuente (referido maestro) y medio (WhatsApp, teléfono, presencial)")
     }
 
+    Container(contact_mod, "Contactos", "Módulo contacts (res.partner); dependencia obligatoria de crm", "Maestro transversal: cuenta (cliente/obra) y contactos (dueño, maestro, receptor) usados por CRM, Ventas, POS y Facturación")
+
     Boundary(erp_b, "Dominio ERP") {
-        Container(sales_mod, "Ventas", "Módulos sale + sale_crm", "Cotización (borrador/enviada) ligada a la oportunidad; pedido confirmado")
-        Container(pos_mod, "Punto de Venta", "Módulo point_of_sale", "Venta de mostrador")
-        Container(inv_mod, "Inventario", "Módulo stock", "Stock en tienda y 2 almacenes; consulta de disponibilidad")
-        Container(acc_mod, "Contabilidad básica", "Módulo comunitario Odoo Mates / OCA (ADR-003)", "Registros internos; no reemplaza a KeyFacil")
+        Container(sales_mod, "Ventas", "Módulos sale_management + sale; puentes sale_crm y sale_stock", "Cotización ligada a la oportunidad; pedido confirmado que genera la entrega")
+        Container(pos_mod, "Punto de Venta", "Módulo point_of_sale (requiere stock_account); puente pos_sale", "Venta de mostrador")
+        Container(inv_mod, "Inventario", "Módulos stock + stock_account", "Stock en tienda y 2 almacenes; consulta de disponibilidad; valoración por validar")
+        Container(acc_mod, "Facturación", "Módulo account (dependencia obligatoria de sale y point_of_sale)", "Diarios, pagos y referencia del comprobante; no emite comprobantes fiscales")
+        Container(om_mod, "Extensión contable", "Módulo comunitario OCA / Odoo Mates (ADR-003)", "Menús e informes contables adicionales; necesidad por revisar")
     }
     ContainerDb(db, "Base de datos", "PostgreSQL", "Datos de todos los módulos")
 }
@@ -33,13 +35,19 @@ Rel(prop, whatsapp, "Conversa con cliente y maestro", "App móvil")
 Rel(web, crm_mod, "Gestiona pipeline", "JSON-RPC")
 Rel(web, sales_mod, "Gestiona cotizaciones", "JSON-RPC")
 Rel(crm_mod, utm_mod, "Etiqueta origen del lead")
-Rel(crm_mod, contact_mod, "Vincula cuenta y contacto")
+Rel(crm_mod, contact_mod, "Requiere; vincula cuenta y contacto")
+Rel(sales_mod, contact_mod, "Cliente del pedido")
 Rel(crm_mod, sales_mod, "Crea cotización desde la oportunidad (sale_crm)")
-Rel(sales_mod, inv_mod, "Consulta disponibilidad; reserva solo al confirmar")
-Rel(sales_mod, acc_mod, "Referencia del comprobante y cobro")
-Rel(pos_mod, inv_mod, "Descuenta stock automáticamente en cada venta")
+Rel(sales_mod, inv_mod, "Consulta disponibilidad; entrega al confirmar (sale_stock)")
+Rel(sales_mod, acc_mod, "Requiere (account_payment); referencia del comprobante y cobro")
+Rel(pos_mod, inv_mod, "Requiere (stock_account); descuenta stock en cada venta")
+Rel(pos_mod, acc_mod, "Requiere (stock_account); registra pagos de caja")
+Rel(pos_mod, sales_mod, "Puede liquidar pedidos (pos_sale, uso por decidir)")
+Rel(inv_mod, acc_mod, "Valoración (stock_account, por validar)")
+Rel(om_mod, acc_mod, "Extiende")
 Rel(prop, keyfacil, "Emite comprobante manualmente", "App web")
 Rel(crm_mod, db, "Lee/escribe", "SQL")
 Rel(sales_mod, db, "Lee/escribe", "SQL")
 Rel(inv_mod, db, "Lee/escribe", "SQL")
+Rel(acc_mod, db, "Lee/escribe", "SQL")
 @enduml

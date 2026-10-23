@@ -8,7 +8,7 @@ Person(prop, "Propietarios", "Atienden, cotizan, deciden descuentos, promesas y 
 Person(trab, "Trabajadores", "Atienden mostrador, registran interacciones y preparan mercadería")
 
 System_Ext(whatsapp, "WhatsApp / Teléfono", "Canales de consulta, envío de listas y cotizaciones")
-System(odoo, "Odoo 18 Community", "CRM: relación comercial, lead, oportunidad y cotización\nERP: pedido confirmado, inventario y contabilidad básica")
+System(odoo, "Odoo 18 Community", "CRM (crm + contacts): relación comercial, lead, oportunidad y cotización\nERP (sale_management, point_of_sale, stock, account): pedido confirmado, inventario y facturación interna")
 System_Ext(keyfacil, "KeyFacil", "Emisión del comprobante electrónico (SUNAT); operado por los propietarios")
 
 Rel(cliente, whatsapp, "Consulta precios y disponibilidad", "Mensaje / llamada")
