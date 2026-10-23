@@ -3,6 +3,21 @@
 Este archivo resume los **cambios relevantes del proyecto acumulativo**. No reemplaza el historial de Git ni registra cada commit: documenta cambios que afectan la estructura del repositorio, el alcance, las decisiones, los procesos, los datos, las pruebas o la evidencia del proyecto.
 
 
+## 2026-10-23 — Dependencias obligatorias de los módulos de Odoo
+
+### Añadido
+
+- `arquitectura/base/modulos-y-dependencias.md`: inventario de módulos, dependencias obligatorias y módulos puente según los manifiestos de Odoo 18.0, con hallazgos H-01 a H-08.
+- Vista de dependencias entre módulos en `arquitectura/vistas/dependencias/` (fuente y render).
+- CA-18 en VER-02 y riesgos RSK-10 y RSK-11.
+
+### Cambiado
+
+- Facturación (`account`) pasa a formar parte del ERP base como dependencia obligatoria de Ventas y Punto de Venta; VER-01 registra la corrección.
+- Contactos se representa como maestro transversal y dependencia obligatoria del CRM (CA-10).
+- Vistas C4 de contexto, contenedores y componentes regeneradas con los módulos `sale_management`, `account`, `stock_account`, `sale_stock`, `sale_crm` y `pos_sale`.
+- Alcance y flujo O2C alineados con el inventario de módulos.
+
 ## 2026-10-17 — Reorganización y alineación de la documentación
 
 ### Añadido
