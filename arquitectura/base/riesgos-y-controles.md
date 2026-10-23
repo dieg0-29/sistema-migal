@@ -24,6 +24,8 @@ Reunir en un solo lugar los riesgos de la solución y sus controles. Los documen
 | RSK-07 | Suponer controles automáticos que Odoo no aplica | Se documenta un bloqueo no probado | Controles inexistentes en la práctica | Probar cada control en la instancia antes de declararlo | R-PRO | Caso de prueba ejecutado | INT-01 | Abierto |
 | RSK-08 | Sin responsable técnico (R-TEC) | Nadie gestiona usuarios, respaldos ni actualizaciones | Pérdida de datos o accesos indebidos | Asignar R-TEC o contratar soporte externo | R-PRO | Asignación documentada | [Modelo de autorización](../seguridad/modelo-autorizacion.md) | Abierto |
 | RSK-09 | Precios de lista desactualizados en productos volátiles (cemento, fierro) | Ajustes frecuentes al cotizar | Cotizar con pérdida o precios inconsistentes | Lista de precios con fecha de vigencia mantenida por R-PRO (RN-03) | R-PRO | Historial de precios | [Justificación del CRM](../../procesos/comercial-crm/justificacion-crm.md) | Abierto |
+| RSK-10 | Facturas internas de Odoo confundidas con comprobantes de KeyFacil | Se generan facturas desde el pedido en Odoo y se entregan al cliente | Doble registro o comprobantes sin validez tributaria | Definir si Facturación crea facturas o solo registra pagos y referencias; restringir por grupos de acceso y procedimiento ([RN-11](../../procesos/catalogo-reglas.md)) | R-FAC | Configuración de Facturación documentada | [Módulos y dependencias](modulos-y-dependencias.md) (H-07) | Abierto |
+| RSK-11 | Pedidos de Ventas liquidados desde el Punto de Venta (`pos_sale`) | Un pedido aparece cobrado en caja con una entrega distinta a la programada | Doble salida de stock o cobro sin vínculo con la entrega | Decidir si se permite; si no, restringir por procedimiento y probar el comportamiento en la instancia | R-PRO | Caso de prueba ejecutado | [Módulos y dependencias](modulos-y-dependencias.md) (H-06) | Abierto |
 
 ## 4. Uso
 
@@ -35,3 +37,4 @@ Reunir en un solo lugar los riesgos de la solución y sus controles. Los documen
 | Versión | Fecha | Autor | Cambio |
 |---|---|---|---|
 | 0.1 | 17/10/2026 | Diego Pinedo | Versión inicial; reúne los riesgos de implementación, de INT-01 y del CRM con perfiles del modelo de autorización |
+| 0.2 | 23/10/2026 | Diego Pinedo | Adición de RSK-10 y RSK-11, derivados de las dependencias obligatorias de los módulos |
