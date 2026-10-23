@@ -29,7 +29,8 @@ Recuperar el contexto comercial disperso en conversaciones, notas y memoria de l
 |---|---|---|
 | Módulo CRM | Leads, oportunidades, etapas, probabilidad, actividades y motivos de pérdida | [Flujo comercial](../../procesos/comercial-crm/flujo-comercial.md) |
 | Marketing / UTM | Campaña, fuente y medio de cada lead | [Cuenta, contacto y canales](../../procesos/comercial-crm/cuenta-contacto-canales.md) |
-| Modulo Contactos | Maestro del ERP requerido como habilitador de cuentas y contactos para el CRM | [Cuenta, contacto y canales](../../procesos/comercial-crm/cuenta-contacto-canales.md) |
+| Módulo Contactos | Dependencia obligatoria del módulo `crm`; maestro de cuentas y contactos compartido con Ventas, Punto de Venta y Facturación | [Cuenta, contacto y canales](../../procesos/comercial-crm/cuenta-contacto-canales.md), [Módulos y dependencias](../base/modulos-y-dependencias.md) |
+| Dependencias técnicas del CRM | `sales_team`, `calendar`, `utm`, `mail` y `phone_validation`, instaladas con `crm`; el puente `sale_crm` se instala automáticamente al coexistir con Ventas | [Módulos y dependencias](../base/modulos-y-dependencias.md) |
 | Reglas y decisiones comerciales | Responsables y evidencia para descuento, disponibilidad y comprobante previsto | [Decisiones comerciales](../../procesos/comercial-crm/decisiones-comerciales.md) |
 | Frontera CRM a ERP | La cotización aceptada pasa al ERP como pedido | [INT-01](../integraciones/INT-01-CRM-ERP.md), [ADR-004](../decisiones/ADR-004-odoo-community-fronteras-crm-erp.md) |
 
@@ -46,7 +47,8 @@ Recuperar el contexto comercial disperso en conversaciones, notas y memoria de l
 | CA-07 | Contabilidad | Contabilidad de terceros descrita como requisito universal | Precisar brecha entre módulo estándar y complemento | Delimitar qué registra el ERP frente a KeyFacil | [ADR-003](../decisiones/ADR-003-contabilidad.md) | Corrección pendiente del ADR |
 | CA-08 | Datos de prueba | Sin guía común | Distinguir catálogos sintéticos, IDs de caso e IDs de sistema | Probar el recorrido CRM a ERP de forma reproducible | [Datos de prueba](../../datos/pruebas/README.md) | Guía incorporada; ejecución pendiente |
 | CA-09 | Módulo CRM | Forma de trabajo no formalizada | Módulo nativo en la misma instancia del ERP | Centralizar el embudo comercial sin conectores externos | [INT-01](../integraciones/INT-01-CRM-ERP.md), [Flujo comercial](../../procesos/comercial-crm/flujo-comercial.md) | En configuración |
-| CA-10 | Módulo de Contactos | Aspecto no formalizado | Maestro compartido y habilitador para el CRM | Unificar clientes y contactos sin duplicar datos | [Cuenta, contacto y canales](../../procesos/comercial-crm/cuenta-contacto-canales.md), [ADR-004](../decisiones/ADR-004-odoo-community-fronteras-crm-erp.md) | Por validar en pruebas |
+| CA-10 | Módulo de Contactos | Aspecto no formalizado | Dependencia obligatoria de `crm`; maestro transversal usado por CRM, Ventas, Punto de Venta y Facturación | Unificar clientes y contactos sin duplicar datos | [Cuenta, contacto y canales](../../procesos/comercial-crm/cuenta-contacto-canales.md), [ADR-004](../decisiones/ADR-004-odoo-community-fronteras-crm-erp.md), [Módulos y dependencias](../base/modulos-y-dependencias.md) | Por validar en pruebas |
+| CA-18 | Dependencias técnicas del CRM | Solo se consideraban `crm`, `utm` y `contacts` | `crm` instala también `sales_team`, `calendar`, `mail` y `phone_validation`; `sale_crm` se instala automáticamente con Ventas | Representar los módulos que realmente se instalan y sus grupos de acceso | [Módulos y dependencias](../base/modulos-y-dependencias.md), [Vistas C4](../vistas/consolidado-diagramas.md) | Documentado; por verificar en la instancia |
 
 ## 6. Decisiones pendientes
 
@@ -60,3 +62,4 @@ Recuperar el contexto comercial disperso en conversaciones, notas y memoria de l
 |---|---|---|---|
 | 0.1 | 17/10/2026 | César Joaquín | Versión inicial |
 | 0.2 | 23/10/2026 | Gabriel Martinez | Adición de CA-09 (CRM) y CA-10 (Contactos) como componentes del ERP |
+| 0.3 | 23/10/2026 | Diego Pinedo | Precisión de CA-10 como dependencia obligatoria y adición de CA-18 (dependencias técnicas del CRM; CA-11 a CA-17 ya están asignados en VER-03) |
