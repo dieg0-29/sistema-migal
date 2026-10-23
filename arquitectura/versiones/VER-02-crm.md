@@ -29,7 +29,7 @@ Recuperar el contexto comercial disperso en conversaciones, notas y memoria de l
 |---|---|---|
 | Módulo CRM | Leads, oportunidades, etapas, probabilidad, actividades y motivos de pérdida | [Flujo comercial](../../procesos/comercial-crm/flujo-comercial.md) |
 | Marketing / UTM | Campaña, fuente y medio de cada lead | [Cuenta, contacto y canales](../../procesos/comercial-crm/cuenta-contacto-canales.md) |
-| Contactos | Cuenta (cliente u obra) y contactos (dueño, maestro, receptor) | [Cuenta, contacto y canales](../../procesos/comercial-crm/cuenta-contacto-canales.md) |
+| Modulo Contactos | Maestro del ERP requerido como habilitador de cuentas y contactos para el CRM | [Cuenta, contacto y canales](../../procesos/comercial-crm/cuenta-contacto-canales.md) |
 | Reglas y decisiones comerciales | Responsables y evidencia para descuento, disponibilidad y comprobante previsto | [Decisiones comerciales](../../procesos/comercial-crm/decisiones-comerciales.md) |
 | Frontera CRM a ERP | La cotización aceptada pasa al ERP como pedido | [INT-01](../integraciones/INT-01-CRM-ERP.md), [ADR-004](../decisiones/ADR-004-odoo-community-fronteras-crm-erp.md) |
 
@@ -45,6 +45,8 @@ Recuperar el contexto comercial disperso en conversaciones, notas y memoria de l
 | CA-06 | Punto de Venta | Descuento de stock inmediato y al cierre descritos a la vez | El sistema descuenta automáticamente el stock de la Tienda en el momento de cada venta | Disponibilidad confiable para las promesas comerciales | [O2C](../../procesos/o2c/flujo.md), [Inventario](../../procesos/inventario/flujo.md) | Decidido; pendiente de prueba en la instancia |
 | CA-07 | Contabilidad | Contabilidad de terceros descrita como requisito universal | Precisar brecha entre módulo estándar y complemento | Delimitar qué registra el ERP frente a KeyFacil | [ADR-003](../decisiones/ADR-003-contabilidad.md) | Corrección pendiente del ADR |
 | CA-08 | Datos de prueba | Sin guía común | Distinguir catálogos sintéticos, IDs de caso e IDs de sistema | Probar el recorrido CRM a ERP de forma reproducible | [Datos de prueba](../../datos/pruebas/README.md) | Guía incorporada; ejecución pendiente |
+| CA-09 | Módulo CRM | Forma de trabajo no formalizada | Módulo nativo en la misma instancia del ERP | Centralizar el embudo comercial sin conectores externos | [INT-01](../integraciones/INT-01-CRM-ERP.md), [Flujo comercial](../../procesos/comercial-crm/flujo-comercial.md) | En configuración |
+| CA-10 | Módulo de Contactos | Aspecto no formalizado | Maestro compartido y habilitador para el CRM | Unificar clientes y contactos sin duplicar datos | [Cuenta, contacto y canales](../../procesos/comercial-crm/cuenta-contacto-canales.md), [ADR-004](../decisiones/ADR-004-odoo-community-fronteras-crm-erp.md) | Por validar en pruebas |
 
 ## 6. Decisiones pendientes
 
@@ -57,3 +59,4 @@ Recuperar el contexto comercial disperso en conversaciones, notas y memoria de l
 | Versión | Fecha | Autor | Cambio |
 |---|---|---|---|
 | 0.1 | 17/10/2026 | César Joaquín | Versión inicial |
+| 0.2 | 23/10/2026 | Gabriel Martinez | Adición de CA-09 (CRM) y CA-10 (Contactos) como componentes del ERP |
