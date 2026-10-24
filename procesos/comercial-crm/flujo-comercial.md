@@ -1,101 +1,169 @@
-# Flujo comercial: de la consulta a la cotización aceptada
+# Flujo comercial: de la necesidad comercial al pedido confirmado
 
-## 1. Metadatos
+## 1. Propósito
 
-* **Fecha:** 17/10/2026
-* **Versión:** 0.1
-* **Autores:** Alejandro Flores
-* **Sistema:** CRM (Odoo 18 Community)
+`[E][AS-IS]` MIGAL recibe consultas y solicitudes comerciales mediante atención presencial, WhatsApp, llamadas y referidos. La información se encuentra distribuida en registros no integrados, lo que dificulta el seguimiento de negociaciones, cotizaciones y decisiones comerciales. `[FN-01][FN-02]`
 
-## 2. Propósito
+`[TO-BE]` El flujo propuesto permite gestionar una necesidad comercial desde su identificación hasta la confirmación del pedido, conservando la trazabilidad de los participantes, oportunidades, cotizaciones, condiciones aceptadas y validaciones operativas.
 
-`[E][AS-IS]` Hoy las consultas que no se cierran de inmediato se pierden entre WhatsApp, el mostrador y la memoria de los propietarios; los precios y márgenes dependen de una sola persona y no hay un registro de qué se cotizó ni por qué. `[FN-01][FN-02]`
+El CRM gestiona el recorrido comercial y el ERP valida la disponibilidad de stock, aplica las reglas de abastecimiento y permite confirmar los pedidos. La programación de entregas y el abastecimiento se coordinan después de la confirmación.
 
-El flujo propuesto centraliza toda intención de compra en el CRM, permite priorizar el seguimiento y conserva cada cotización con su versión, precio y decisión, sin exigir al cliente datos que la consulta no necesita.
+## 2. Inicio y fin
 
-## 3. Inicio y fin
+**Inicio:** identificación o recepción de una necesidad comercial del cliente mediante atención directa, WhatsApp, llamada, referido o campaña identificable, cuando corresponda.
 
-* **Inicio:** primer contacto, consulta o lista de materiales recibida por cualquier canal.
-* **Fin:** cotización aceptada, que pasa al ERP como pedido ([INT-01](../../arquitectura/integraciones/INT-01-CRM-ERP.md), F-02); o oportunidad cerrada como ganada parcial o perdida, con su motivo.
+**Fin:** confirmación del pedido después de la respuesta ERP (EV-15), ya sea aceptada o condicionada por abastecimiento. El recorrido también puede finalizar sin pedido cuando no existe aceptación comercial o la solicitud es rechazada.
 
-## 4. Actores
+La cotización aceptada (EV-11) no constituye por sí misma un pedido confirmado ni una oportunidad ganada.
 
-| Perfil | Participación |
+El proceso O2C continúa posteriormente mediante reservas, abastecimiento cuando corresponda, programación y ejecución de entregas, emisión de comprobantes, cobros y cierre.
+
+## 3. Sistemas, módulos y actores
+
+### 3.1. Responsabilidades funcionales
+
+| Sistema | Responsabilidad |
 |---|---|
-| R-ATN | Registra consultas, leads, oportunidades, cotizaciones y seguimiento |
-| R-PRO | Decide excepciones de precio, promesas de disponibilidad crítica y condiciones especiales |
-| Cliente, dueño de obra o maestro de obra | Consulta, negocia y acepta; el maestro puede preparar la lista y el dueño suele pagar |
+| CRM | Registrar la necesidad comercial, gestionar leads, calificación, oportunidades, cotizaciones, aceptación, solicitud de pedido y seguimiento de la respuesta ERP. |
+| ERP | Consultar existencias, validar las solicitudes de pedido, aplicar las políticas de abastecimiento y gestionar la confirmación y ejecución operativa de pedidos. |
 
-## 5. Entradas y salidas
+### 3.2. Módulos técnicos de apoyo
 
-| Entradas | Salidas |
+| Módulo Odoo | Intervención |
 |---|---|
-| Consulta por mostrador, WhatsApp, teléfono o referido; lista de materiales; catálogo y lista de precios | Lead, oportunidad calificada, cotización versionada, decisiones registradas, resultado comercial |
+| CRM (`crm`) | Gestión de leads, oportunidades, etapas comerciales y seguimiento. |
+| Contactos (`contacts`) | Identificación de clientes, contactos y participantes. |
+| Ventas (`sale_management` / `sale`) | Elaboración de cotizaciones y gestión de pedidos. |
+| Inventario (`stock`) | Consulta de disponibilidad, reservas y movimientos de inventario. |
+| Punto de Venta (`point_of_sale`) | Ventas directas de mostrador mediante un recorrido simplificado. |
 
-Canales, fuentes y campañas: ver [cuenta, contacto y canales](cuenta-contacto-canales.md). Campos: ver [diccionario de datos](../../datos/diccionario-datos.md).
+Los módulos pertenecen a una misma instancia de Odoo 18 Community. Las responsabilidades funcionales de CRM y ERP no equivalen a una separación física entre aplicaciones.
 
-## 6. Flujo
+### 3.3. Actores y responsabilidades
 
-![Diagrama BPMN del proceso comercial](render/flujo-comercial.png)
+| Actor | Responsabilidad |
+|---|---|
+| **Responsable de Atención y Ventas** | Atiende al cliente, registra y califica leads, gestiona oportunidades, consulta existencias, elabora cotizaciones, realiza seguimiento, registra aceptaciones y genera solicitudes de pedido. |
+| **Propietario de MIGAL** | Autoriza excepciones comerciales y decide sobre solicitudes con faltantes de productos que no pertenezcan a las cuatro categorías contempladas por la política de abastecimiento. |
+| **Responsable de Despacho y Transporte** | Después de confirmar el pedido, verifica los recursos de reparto y determina la fecha viable de entrega. |
+| **Responsable de Abastecimiento** | Coordina la reposición de productos faltantes en pedidos condicionados e informa la fecha prevista de disponibilidad. |
+| **Cliente o responsable de la compra** | Comunica su necesidad, solicita o acepta recibir una cotización y decide si acepta la propuesta. |
+| **Maestro de obra o contacto de obra** | Puede comunicar requerimientos, preparar listas de materiales y coordinar aspectos de la entrega, sin asumir necesariamente la responsabilidad económica. |
+| **ERP de Odoo** | Contrasta cantidades con existencias, identifica categorías de productos faltantes y determina la respuesta operativa o el escalamiento al propietario. |
 
-Fuente editable: [`fuentes/flujo-comercial.bpm`](fuentes/flujo-comercial.bpm). Eventos de negocio de cada etapa: [INT-01](../../arquitectura/integraciones/INT-01-CRM-ERP.md), §4.
+Los actores humanos representan funciones asignables al personal existente de MIGAL, no nuevos puestos de trabajo. La validación ordinaria de stock se propone como automatizada; la intervención del propietario se limita a las excepciones definidas.
 
-| Paso | Etapa | Actividad | Actor | Regla | Evidencia |
+## 4. Entradas y salidas
+
+Las entradas y salidas identifican las condiciones necesarias y los resultados de cada etapa. El avance comercial no se produce automáticamente por disponer de más información.
+
+| Entrada | Salida |
+|---|---|
+| Necesidad o interés inicial del cliente y datos mínimos para continuar la atención. | **Lead registrado**, con necesidad, canal, fuente y responsable. |
+| Lead con necesidad concreta de materiales o productos identificada. | **Lead calificado**, aunque todavía no exista negociación. |
+| Lead calificado e intención del cliente de continuar evaluando una posible compra. | **Oportunidad comercial**, con responsable y próxima acción. |
+| Oportunidad y solicitud del cliente para recibir una cotización, o conformidad con la propuesta de Ventas de elaborarla. | **Solicitud o conformidad para cotizar identificada**; se recopila cualquier información pendiente. |
+| Solicitud o conformidad, datos suficientes y existencias consultadas. | **Cotización elaborada** mediante Ventas, con identificador propio y vinculada a la oportunidad. |
+| Cotización presentada y solicitud de cambios del cliente. | **Otra cotización independiente**, vinculada a la misma oportunidad y con su propio identificador. |
+| Cotización identificada y aceptación del cliente. | **Cotización aceptada (EV-11)**, con referencia y evidencia. |
+| Cotización aceptada y condiciones necesarias para la validación. | **Solicitud de pedido (EV-14)** vinculada a la cotización. |
+| Solicitud de pedido y verificación ERP de stock y categorías. | **Respuesta EV-15**: aceptada, condicionada o rechazada, previa decisión del propietario cuando corresponda. |
+| Respuesta aceptada o condicionada. | **Pedido confirmado**, con compromiso de abastecimiento si existen faltantes. |
+| Respuesta rechazada. | Solicitud sin pedido confirmado y motivo registrado. |
+| Pedido confirmado. | Coordinación posterior de entrega y abastecimiento cuando corresponda. |
+
+La consulta de stock durante la elaboración de la cotización no implica reserva. Tampoco se requiere verificar previamente la disponibilidad de transporte para elaborar la propuesta.
+
+Los datos se relacionan con el [diccionario de datos](../../datos/diccionario-datos.md) y el [modelo de cuentas y canales](cuenta-contacto-canales.md).
+
+## 5. Flujo comercial TO-BE
+
+El flujo establece las actividades, condiciones de avance, responsables y evidencias esperadas desde la necesidad comercial hasta la confirmación del pedido.
+
+| Paso | Etapa | Actividad y criterio de avance | Responsable | Regla o evento | Evidencia |
 |---|---|---|---|---|---|
-| 1 | ETP-01 Nuevo (lead) | Recibir la consulta, buscar la cuenta o contacto existente y registrar el lead con canal, fuente, necesidad inicial y responsable de seguimiento | R-ATN | RN-01 | Lead con identificador; no se exige DNI/RUC |
-| 2 | ETP-02 Calificado (oportunidad) | Si hay una necesidad concreta, crear la oportunidad: cuenta y contactos con su rol, obra o dirección, probabilidad, competencia y próxima acción | R-ATN | RN-02 | Oportunidad con responsable y próxima acción |
-| 3 | ETP-03 Propuesta (cotización) | Elaborar la cotización con productos del catálogo, precios de la lista vigente y comprobante previsto | R-ATN | RN-03, RN-06 | Cotización V01 con líneas, precios y comprobante previsto |
-| 4 | ETP-03 | Si el cliente pide fecha o disponibilidad, confirmar con quien tenga autorización antes de prometer | R-PRO | RN-05 | Promesa con condición (confirmada, pendiente o condicionada) y responsable |
-| 5 | ETP-03 | Si el cliente pide mejor precio, decidir la excepción y emitir una nueva versión | R-PRO | EXC-01, RN-04 | Nueva versión con precio de referencia, ofrecido, motivo y autorizador |
-| 6 | Seguimiento | Comunicar la cotización y dar seguimiento según la próxima acción | R-ATN | RN-02 | Registro de envío, respuesta y siguiente acción |
-| 7 | Cierre | Registrar el resultado: aceptada (pasa al ERP), ganada parcial o perdida con motivo | R-ATN | RN-08 | Versión aceptada, quién aceptó y cuándo; o motivo de no adjudicación |
+| 1 | Necesidad comercial | Identificar la necesidad inicial y el canal de atención. | Atención y Ventas | EV-02 | Necesidad, canal y fuente. |
+| 2 | Lead | Buscar contactos existentes y registrar el interés comercial con datos mínimos para continuar la atención. | Atención y Ventas | EV-03, RN-01 | Lead registrado. |
+| 3 | Lead calificado | Precisar la necesidad hasta identificar materiales o requerimientos concretos. | Atención y Ventas | Calificación funcional de EV-05 | Necesidad identificada. |
+| 4 | Oportunidad | Comprobar la intención de continuar evaluando una compra y establecer responsable y próxima acción. | Atención y Ventas | EV-05, RN-02 | Oportunidad y seguimiento. |
+| 5 | Cotización | Verificar que el cliente solicite o acepte recibir una cotización, completar datos, consultar stock y elaborar la propuesta mediante Ventas. | Atención y Ventas | EV-06, RN-03, RN-06 | Cotización identificada y vinculada a la oportunidad. |
+| 6 | Revisión comercial | Gestionar negociaciones y excepciones de precio, solicitando autorización al propietario cuando corresponda. | Atención y Ventas / Propietario | EV-07, EV-08, EV-09 | Condiciones y autorizaciones registradas. |
+| 7 | Modificaciones y seguimiento | Comunicar la propuesta y efectuar seguimiento. Si el cliente solicita cambios, crear otra cotización independiente vinculada a la misma oportunidad. | Atención y Ventas | EV-10, RN-04 | Cotizaciones identificadas y actividades registradas. |
+| 8 | Aceptación | Registrar la cotización concreta aceptada por el cliente, sin marcar todavía la oportunidad como ganada. | Atención y Ventas | EV-11, RN-08 | Cotización aceptada y evidencia. |
+| 9 | Solicitud de pedido | Generar EV-14 con las cantidades y condiciones aceptadas. | Atención y Ventas | EV-14 | Solicitud vinculada a la cotización. |
+| 10 | Validación de stock y categorías | Verificar existencias e identificar las categorías de los productos faltantes. | ERP de Odoo (automatización propuesta) | EV-15 | Disponibilidad, faltantes y categorías. |
+| 11 | Decisión excepcional | Si algún producto faltante no pertenece a cemento, fierro, agregados o ladrillos, escalar la decisión al propietario. | Propietario / ERP | Política de abastecimiento | Autorización o rechazo documentado. |
+| 12 | Respuesta ERP y confirmación | Emitir EV-15 y confirmar el pedido si la respuesta es aceptada o condicionada. Ante rechazo, no confirmar. | ERP de Odoo (flujo propuesto) | EV-15, RN-08 | Pedido confirmado o rechazo registrado. |
+| 13 | Cierre comercial | Marcar la oportunidad como **Ganada** únicamente cuando exista un pedido confirmado, aceptado o condicionado. | Atención y Ventas | Criterio TO-BE de cierre | Oportunidad ganada y pedido vinculado. |
+| 14 | Coordinación de entrega | Después de confirmar el pedido, consultar a Despacho la fecha viable y, si existen faltantes, a Abastecimiento la disponibilidad prevista. | Despacho, Abastecimiento y Atención y Ventas | Coordinación operativa | Fecha y responsables registrados. |
+| 15 | Continuidad operativa | ERP gestiona reservas, reposición pendiente, programación y entregas, manteniendo el seguimiento comercial correspondiente. | ERP / Atención y Ventas | Frontera F-02 | Pedido y compromisos pendientes. |
 
-### 6.1. Criterios por etapa
+Los pasos 1 al 5 representan el avance comercial hasta la cotización. Los pasos 6 al 8 corresponden a negociación y aceptación. Los pasos 9 al 12 abarcan la solicitud, validación y confirmación del pedido. El paso 13 formaliza el cierre comercial como ganado y los pasos 14 y 15 representan la continuidad operativa.
 
-**Señales para calificar (paso 2).** `[I]` Obra activa o necesidad concreta; lista de productos o cantidades aproximadas; decisor o responsable del pago identificado; consulta de entrega, descuento o crédito; maestro de obra que coordina activamente; pedido de cotización extensa. Estas señales no garantizan la compra.
+El paso 11 solamente se ejecuta si existen productos faltantes fuera de las cuatro categorías establecidas. No se requiere la intervención del propietario para las validaciones ordinarias de stock.
 
-**Probabilidad.** `[TO-BE]` Escala cualitativa, porque MIGAL no tiene datos históricos para calibrar porcentajes:
+La respuesta condicionada representa un pedido confirmado con compromiso de abastecimiento y no necesita convertirse posteriormente en aceptada.
 
-| Probabilidad | Criterio orientativo |
-|---|---|
-| Baja | Interés general, información incompleta o sin decisión próxima |
-| Media | Necesidad concreta y productos identificados, pero aún compara alternativas |
-| Alta | Obra activa, lista concreta, decisor identificado y negociación de condiciones o entrega |
+### 5.1. Criterios de calificación y transición comercial
 
-**Competencia.** No es obligatorio registrar el nombre del competidor. Se conserva si hubo referencia competitiva, el competidor si el cliente lo menciona, la línea afectada y la condición comunicada (precio, disponibilidad, flete u otra).
-
-**Versionado.** Cada cambio relevante genera una versión nueva y la anterior se conserva: `COT-SIM-001-V01` → `COT-SIM-001-V02`.
-
-**Vigencia.** `[E][AS-IS]` No existe una vigencia fija: mientras no haya confirmación o pago, el precio puede actualizarse si cambian los costos; una vez pagado, se respeta. La cotización declara: *precio sujeto a actualización mientras no exista confirmación o pago*. Un plazo fijo solo se usará si los propietarios lo aprueban.
-
-**Precio por línea.** Producto, cantidad, precio de referencia, precio ofrecido, diferencia, motivo y autorizador cuando corresponda. No se propone un porcentaje máximo de descuento sin validación de los propietarios ([precios](../../datos/maestros/precios.md)).
-
-## 7. Excepciones
-
-| Situación | Tratamiento | Regla |
+| Momento comercial | Criterio necesario | Qué todavía no implica |
 |---|---|---|
-| Contacto inválido | Lead descartado con motivo, sin crear cuenta de cliente | — |
-| Necesidad no calificada | El lead permanece en "Nuevo" o se descarta | RN-02 |
-| Mejor precio de la competencia | Decide R-PRO; nueva versión con motivo y autorizador | EXC-01 |
-| Stock registrado distinto del físico | No comprometer el faltante; avisar a almacén y ofrecer sustituto o dejar pendiente | EXC-02 |
-| Cambio de costos antes de la confirmación | Nueva versión con el precio actualizado | RN-03, RN-04 |
-| Compra repartida entre ferreterías | Resultado "Ganada parcial", con motivo de la línea no adjudicada | — |
+| **Lead** | Existe un interés inicial y datos mínimos para continuar la atención. | No implica necesidad concreta ni negociación. |
+| **Lead calificado** | Se identifica una necesidad concreta de materiales o productos. | No implica intención de negociar ni solicitud de cotización. |
+| **Oportunidad** | El cliente manifiesta interés en continuar evaluando una compra; se asignan responsable y próxima acción. | No autoriza por sí sola a elaborar una cotización. |
+| **Cotización** | El cliente solicita o acepta recibir una propuesta; se completan los datos, se consulta stock y se elabora efectivamente la cotización. | No implica aceptación ni confirmación del pedido. |
+| **Ganada** | Existe un pedido confirmado después de una respuesta EV-15 aceptada o condicionada. | No significa que ya se haya entregado o cobrado. |
 
-Motivos de no adjudicación: precio de la competencia, falta de disponibilidad, flete o entrega, crédito no concedido, necesidad cancelada, cliente sin respuesta, compra parcial en otra ferretería u otro motivo documentado.
+**Representación funcional prevista en Odoo CRM:**
 
-## 8. Indicadores
+Lead → Lead calificado → Oportunidad → Cotización → Ganada.
 
-Ver [indicadores O2C](../o2c/indicadores.md), O2C-K-01 a O2C-K-04, que cubren seguimiento, trazabilidad de cotizaciones, tiempo de respuesta y excepciones.
+La gestión de leads y su conversión a oportunidades debe distinguirse de las etapas configurables del Kanban de oportunidades. Este recorrido expresa la secuencia funcional acordada, sin asumir que todas sus denominaciones serán columnas de un mismo tablero.
 
-## 9. Pendientes de validación
+El criterio de **Ganada** corresponde a la confirmación efectiva del pedido, no únicamente a la aceptación de la cotización.
 
-* Comprobar en Odoo cómo se representan las etapas, el versionado de cotizaciones y la conversión de oportunidad a cotización; ningún bloqueo (por ejemplo, impedir cotizar sin stock) se da por hecho sin probarlo.
-* Validar con los propietarios la escala de probabilidad y los motivos de no adjudicación.
+Las reglas específicas de negociación, cotizaciones y autorizaciones se desarrollan en [decisiones comerciales](decisiones-comerciales.md). La validación del pedido, la política de cuatro categorías y el tratamiento de faltantes corresponden a [pedido de cliente](../o2c/pedido.md) e [INT-01](../../arquitectura/integraciones/INT-01-CRM-ERP.md).
 
-## 10. Historial de cambios
+## 6. Excepciones y situaciones particulares
 
-| Versión | Fecha | Autor | Cambio |
-|---|---|---|---|
-| 0.1 | 17/10/2026 | Alejandro Flores | Versión inicial; reúne el escenario CRM y el detalle de lead, oportunidad y cotización |
+| Situación | Tratamiento | Referencia |
+|---|---|---|
+| Contacto duplicado | Revisar registros existentes antes de crear otro lead. | RN-01 |
+| Contacto inválido o necesidad sin continuidad | Registrar descarte o finalización con motivo. | EV-04 |
+| Lead sin necesidad concreta | Mantener seguimiento sin calificarlo automáticamente. | Criterio de calificación |
+| Lead calificado sin continuidad comercial | No convertirlo automáticamente en oportunidad. | Criterio de oportunidad |
+| Oportunidad sin solicitud de cotización | Consultar al cliente si desea recibir una propuesta. | Criterio de cotización |
+| Cotización solicitada con datos incompletos | Recopilar información faltante antes de elaborarla. | EV-06 |
+| Modificaciones solicitadas por el cliente | Crear otra cotización independiente vinculada a la oportunidad. | EV-10, RN-04 |
+| Excepción de precio | Solicitar autorización del propietario y registrar la decisión. | EXC-01 |
+| Diferencia entre stock registrado y físico | Comunicar la discrepancia para verificación y eventual ajuste. | EXC-02 |
+| Faltantes de cemento, fierro, agregados o ladrillos | Confirmar el pedido condicionado por abastecimiento conforme a la política. | EV-15 |
+| Faltantes de otras categorías | Escalar al propietario para autorizar el pedido condicionado o rechazar la solicitud. | EV-15 |
+| Respuesta ERP rechazada | No confirmar el pedido y conservar el motivo. | EV-15 |
+| Falta de transporte después de confirmar | Coordinar una fecha viable e informar al cliente. | Coordinación logística |
+| Venta directa de mostrador | Utilizar POS sin exigir el recorrido completo de leads y oportunidades. | Alcance POS |
 
-Fuentes: [fuentes del negocio](../../fuentes/fuentes-negocio.md) (FN-01, FN-02).
+La respuesta final EV-15 mantiene tres resultados: aceptada, condicionada y rechazada. El escalamiento al propietario es una actividad de decisión previa, no un cuarto estado definitivo.
+
+## 7. Indicadores
+
+Los indicadores comerciales se encuentran en [indicadores O2C](../o2c/indicadores.md).
+
+La medición debe distinguir leads registrados, leads calificados, oportunidades, cotizaciones elaboradas, cotizaciones aceptadas, pedidos confirmados y pedidos condicionados por abastecimiento.
+
+La creación de varias cotizaciones para una misma oportunidad no debe contabilizarse como varias oportunidades comerciales.
+
+## 8. Pendientes de validación técnica
+
+- **Configuración del CRM:** habilitar la gestión de leads, definir su conversión a oportunidades y configurar las etapas correspondientes del Kanban, incluido el criterio de Ganada.
+- **Módulos instalados:** comprobar en la instancia la disponibilidad de CRM, Ventas, Inventario y sus dependencias necesarias.
+- **Cotizaciones independientes:** verificar la asociación de varias cotizaciones a una oportunidad y la conservación de la cotización finalmente aceptada, sin presuponer versionado automático.
+- **Validación EV-14/EV-15:** comprobar o implementar la consulta automática de stock, identificación de categorías faltantes, escalamiento excepcional y respuestas de validación.
+- **Reservas y abastecimiento:** verificar el comportamiento real de las reservas y la demanda pendiente al confirmar pedidos condicionados.
+- **Coordinación operativa:** definir el registro de fechas de Despacho y Abastecimiento después de confirmar pedidos.
+- **Asignación de responsabilidades:** identificar qué personas existentes asumirán las funciones comerciales y operativas.
+- **Alineación documental:** actualizar el BPMN comercial, INT-01, el catálogo de reglas y los documentos O2C relacionados.
+
+Las decisiones funcionales aquí descritas no constituyen evidencia de configuración o implementación técnica completada.
+
+Fuentes: [fuentes del negocio](../../fuentes/fuentes-negocio.md), [alcance](../../arquitectura/base/alcance.md), [INT-01](../../arquitectura/integraciones/INT-01-CRM-ERP.md), [catálogo de reglas](../catalogo-reglas.md), [decisiones comerciales](decisiones-comerciales.md) y [pedido de cliente](../o2c/pedido.md).
