@@ -70,17 +70,9 @@ Actualmente no existe una vigencia fija universal para todas las cotizaciones. S
 
 ## 6. Competencia y negociación
 
-MIGAL opera en un entorno de fuerte competencia local.
+MIGAL opera en un entorno de alta competencia local, debido a la presencia de numerosas ferreterías cercanas.
 
-Los clientes y maestros de obra pueden comparar precios entre diferentes ferreterías y utilizar esas referencias durante la negociación.
-
-Una venta no siempre se gana o pierde por completo: un cliente puede comprar determinadas líneas en MIGAL y adquirir otras en otra ferretería.
-
-Por ello, resulta útil distinguir resultados comerciales como:
-
-- ganada total;
-- ganada parcial;
-- perdida.
+Los clientes y maestros de obra pueden comparar precios entre diferentes ferreterías y utilizar esas referencias durante la negociación de precios y condiciones comerciales.
 
 ## 7. Seguimiento comercial
 
