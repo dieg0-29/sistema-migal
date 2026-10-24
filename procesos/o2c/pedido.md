@@ -1,36 +1,85 @@
 # Pedido de cliente
 
-**Estado:** diseño funcional; no acredita configuración de Ventas ni prueba de confirmación. Forma parte del [flujo O2C](flujo.md), pasos iniciales de solicitud, validación y confirmación.
+## 1. Propósito y alcance
 
-## Propósito y frontera
+`[TO-BE]` Formalizar una cotización aceptada como pedido confirmado, conservando las condiciones acordadas y distinguiendo las cantidades disponibles de las pendientes de abastecimiento.
 
-Convertir una propuesta aceptada en un compromiso operativo reconstruible, mediante una solicitud de pedido (EV-14) y una respuesta de validación del ERP (EV-15). Una cotización enviada, una probabilidad alta, una conversación sin aceptación clara o una solicitud pendiente no son un pedido confirmado.
+Este documento desarrolla los controles propios de la solicitud, confirmación y modificación del pedido. Las etapas comerciales corresponden al [flujo comercial](../comercial-crm/flujo-comercial.md); las políticas de cotización, autorización y abastecimiento condicionado, a [decisiones comerciales](../comercial-crm/decisiones-comerciales.md).
 
-## Entradas y responsables
+El proceso comienza con una cotización aceptada identificable y concluye con la confirmación del pedido o el rechazo de la solicitud. Las solicitudes que requieren resolver información o autorizaciones permanecen pendientes antes de obtener una respuesta definitiva.
 
-Cuenta/contacto, cotización y versión, productos/unidades/cantidades, precios y condiciones aceptadas (incluida la modalidad de pago consultada antes de cotizar y concretada en la negociación), soporte de aceptación, consulta previa de stock disponible y destino o datos de entrega cuando corresponda. R-ATN (Comercial) consulta y revalida el inventario mediante el sistema, prepara la solicitud, registra la aceptación del cliente y comunica la respuesta ERP; R-PRO autoriza excepciones; R-ALM apoya ante diferencias físicas y ejecuta la preparación y despacho del compromiso confirmado. La función logística, con persona aún por asignar, evalúa cobertura y viabilidad de fecha y coordina la programación por viajes. No exigir datos adicionales que no correspondan a la operación.
+## 2. Preparación de la solicitud
 
-## Flujo propuesto
+Atención y Ventas comprueba que la solicitud corresponda a la cotización efectivamente aceptada: cliente, productos, unidades, cantidades, precios y condiciones comerciales deben conservar lo acordado.
 
-| Paso | Acción | Evidencia / condición |
-|---|---|---|
-| 1 | Identificar qué versión acepta el cliente y quién comunica | Versión y soporte; validar representación del contacto si procede (EV-11) |
-| 2 | Revisar precios, modalidad y condiciones de pago de la versión aceptada y excepciones pendientes; registrar la solicitud de pedido (EV-14) | Condiciones negociadas y aceptadas, aprobaciones y referencia de solicitud; no redefinir el crédito ni confirmar sobre una oferta sustituida sin nuevo acuerdo |
-| 3 | Comercial revalida en el sistema la disponibilidad por producto y ubicación y consulta la viabilidad logística antes de confirmar | Stock apto, reservado y **disponible**, demanda no cubierta, cantidades, destino, cobertura y fecha pendiente o viable; R-ALM interviene ante discrepancias físicas |
-| 4 | Registrar la respuesta ERP (EV-15) y, solo si es aceptada, tramitar la confirmación operativa del pedido desde Comercial | Aceptación del cliente vinculada a la versión, respuesta aceptada/condicionada/rechazada con motivo, responsable y próxima acción; R-PRO autoriza excepciones. Una respuesta condicionada requiere resolver pendientes y revalidar |
-| 5 | Tras la confirmación, trasladar a programación logística y preparación la información del pedido y de sus posibles viajes | Destino, contacto receptor, cantidades por viaje y ubicación, fecha prevista, responsables y pendientes; documento de salida y guía de remisión cuando corresponda, y constancia de entrega/conformidad posterior. No presumir reserva física completa ni emisión automática de documentos |
-| 6 | Gestionar cambios posteriores que afecten condiciones, cantidades, destino o programación | Motivo, valor anterior/posterior, responsable, impacto en viajes y nueva aceptación si cambia lo acordado; conservar historial |
+Si existen varias cotizaciones vinculadas a la oportunidad, se identifica la aceptada mediante su propio identificador. La solicitud no debe basarse en una propuesta sustituida sin una nueva conformidad del cliente.
 
-## Excepciones
+Antes de remitir la solicitud, deben estar resueltas las autorizaciones comerciales exigibles y los datos necesarios para la operación. Cuando un contacto actúe por cuenta del cliente, se verifica su facultad para comunicar la aceptación según corresponda.
 
-Faltante: consultar alternativa, entrega parcial o reposición con decisión explícita, sin presumir RFQ automática. Para cemento, fierro, agregados y ladrillos puede mantenerse una condición de abastecimiento, sin reserva ficticia ni promesa firme de entrega. Para otros productos sin disponibilidad, mantener revisión antes de comprometer la entrega. Si existe diferencia entre el stock registrado y el físico, aplicar EXC-02.
+La solicitud EV-14 y la respuesta EV-15 conservan las referencias y evidencias definidas en [INT-01 CRM–ERP](../../arquitectura/integraciones/INT-01-CRM-ERP.md). No se exige una fecha de entrega ya programada para generar la solicitud.
 
-Respuesta ERP condicionada: conservar pendientes, responsable y próxima acción hasta nueva validación; no confirmar automáticamente. Respuesta rechazada: registrar motivo y comunicarlo a Comercial. Entrega parcial o reprogramación: conservar cantidades y fechas por viaje, sin marcar la totalidad como entregada. Entrega no conforme: registrar evidencia y observaciones; el tratamiento posterior permanece **`[ND]`**, aún no definido por el equipo.
+## 3. Validación y formalización del pedido
 
-Crédito/descuento pendiente: mantener revisión. Cambio de cliente, cantidades o dirección: revisar impacto y conservar evidencia. Cancelación: comprobar movimientos, comprobantes y pagos existentes antes de cerrar; no borrar historia.
+### 3.1. Disponibilidad para la solicitud
 
-## Aceptación y pendientes
+`[TO-BE]` El ERP revalida la disponibilidad al procesar la solicitud. La consulta realizada durante la cotización constituye un antecedente y no garantiza que las cantidades continúen disponibles.
 
-La prueba futura debe demostrar vínculo con versión aceptada, solicitud EV-14, respuesta EV-15, conservación de condiciones y efecto real de confirmar en el entorno. Verificar reservas, parciales, permisos, mapeo de campos y traspaso trazable a la programación por viajes (fecha, responsable, destino, cantidades, documento de traslado y constancia de recepción). La definición de la respuesta ante no conformidad queda **`[ND]`**. No afirmar bloqueos nativos, reservas completas o emisión automática de guías ni crear un objeto separado si la instancia conserva la transición en el mismo registro.
+La comprobación debe distinguir:
 
-Referencias: [flujo O2C](flujo.md), [INT-01](../../arquitectura/integraciones/INT-01-CRM-ERP.md) (F-02, EV-11, EV-14 y EV-15), [catálogo de reglas](../catalogo-reglas.md) (RN-07, RN-08, RN-09, RN-15 y EXC-02), [ADR-004](../../arquitectura/decisiones/ADR-004-odoo-community-fronteras-crm-erp.md), [fuentes](../../fuentes/fuentes-negocio.md).
+| Concepto | Tratamiento |
+|---|---|
+| Existencias registradas | Cantidades incorporadas al inventario mediante movimientos validados. |
+| Cantidades reservadas o comprometidas | Cantidades cuya asignación a otras operaciones debe considerarse al determinar la disponibilidad utilizable. |
+| Cantidades disponibles para la solicitud | Cantidades que pueden asignarse al pedido según las ubicaciones y reglas de disponibilidad aplicables. |
+| Cantidades faltantes | Parte de lo solicitado que no puede cubrirse con la disponibilidad utilizable. |
+
+La comparación debe utilizar unidades de medida compatibles. El cálculo técnico de disponibilidad y el tratamiento de compromisos sin reserva deberán verificarse en la instancia.
+
+Cuando se detecte una discrepancia entre el registro y las existencias físicas, se aplica EXC-02 y se revisa su efecto sobre las cantidades utilizadas para decidir.
+
+### 3.2. Decisión y confirmación
+
+Con los faltantes identificados, el ERP aplica la política de abastecimiento y escalamiento definida en [decisiones comerciales](../comercial-crm/decisiones-comerciales.md#52-política-de-abastecimiento-condicionado).
+
+La respuesta EV-15 aceptada o condicionada permite confirmar el pedido; la rechazada no lo confirma. Si corresponde intervención del propietario, su decisión debe registrarse antes de completar la confirmación.
+
+La formalización debe conservar el vínculo entre la solicitud, la respuesta y el pedido resultante. Emitir una respuesta favorable sin completar la confirmación técnica no basta para considerar terminado el proceso.
+
+No se exige crear un objeto separado para cada evento: la transición puede conservarse en el mismo registro si la implementación permite reconstruir sus condiciones y evidencias.
+
+### 3.3. Cantidades después de confirmar
+
+El pedido confirmado debe permitir distinguir lo que puede atenderse con disponibilidad existente y lo que queda pendiente de abastecimiento.
+
+La confirmación no acredita por sí sola una reserva completa. Las cantidades faltantes no pueden registrarse como existencias físicas ni como reservas efectivas.
+
+En pedidos condicionados, el cumplimiento se sigue mediante la reducción de cantidades pendientes y las operaciones de recepción y entrega correspondientes. No se requiere cambiar la respuesta original de condicionada a aceptada.
+
+La coordinación de abastecimiento, reservas, programación y entregas continúa en el [flujo O2C](flujo.md). El resultado de la confirmación se comunica a Comercial para aplicar el cierre definido en el [flujo comercial](../comercial-crm/flujo-comercial.md).
+
+## 4. Cambios y cancelaciones
+
+Los cambios deben tratarse según el momento en que se solicitan y las operaciones que ya se hayan ejecutado.
+
+| Momento o situación | Control requerido |
+|---|---|
+| **Cambio antes de confirmar** | Si modifica lo ofrecido, aplicar el procedimiento de nueva cotización de [decisiones comerciales](../comercial-crm/decisiones-comerciales.md#32-modificación-de-cotizaciones), conservar la aceptación correspondiente y actualizar la solicitud que se someterá a validación. |
+| **Cambio después de confirmar** | Revisar el efecto sobre condiciones comerciales, disponibilidad, reservas, abastecimiento y entregas. Registrar motivo, situación anterior, cambio aprobado y conformidad del cliente cuando se modifique lo acordado. |
+| **Cambio con operaciones ya ejecutadas** | Identificar movimientos, entregas, comprobantes y pagos afectados antes de modificar el pedido. Las regularizaciones deben conservar referencias a la operación original. |
+| **Cancelación** | Revisar compromisos y operaciones existentes, liberar o regularizar lo que corresponda y conservar el motivo y la evidencia del cierre. No eliminar el historial del pedido. |
+
+El procedimiento técnico de modificación o cancelación deberá validarse en Odoo. No se presupone que editar el pedido revierta automáticamente reservas, movimientos, comprobantes o pagos.
+
+## 5. Validaciones técnicas pendientes
+
+Las pruebas específicas de este documento deben demostrar:
+
+- **Correspondencia:** el pedido conserva el cliente, productos, cantidades y condiciones de la cotización aceptada, junto con sus referencias de solicitud y respuesta.
+- **Disponibilidad:** el cálculo considera unidades, ubicaciones y compromisos existentes sin asignar dos veces las mismas cantidades.
+- **Confirmación efectiva:** las respuestas aceptada y condicionada producen un pedido confirmado; el rechazo o una autorización pendiente no lo confirman.
+- **Cantidades pendientes:** la confirmación condicionada permite distinguir faltantes sin generar existencias o reservas ficticias.
+- **Modificaciones y cancelaciones:** los cambios conservan la trazabilidad y consideran las operaciones previamente ejecutadas.
+
+Las pruebas del contrato EV-14/EV-15 corresponden a [INT-01](../../arquitectura/integraciones/INT-01-CRM-ERP.md); las de programación y ejecución posterior, al [flujo O2C](flujo.md).
+
+Este documento describe el diseño funcional propuesto y no acredita que los controles estén configurados o implementados.
