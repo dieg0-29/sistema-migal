@@ -120,7 +120,7 @@ Esto se refleja en:
 - precios y descuentos dependientes de personas clave;
 - cotizaciones sin versionado ni seguimiento uniforme;
 - información de direcciones y conversaciones dispersa;
-- dificultad para reconstruir por qué una oportunidad se ganó o perdió.
+- dificultad para reconstruir las decisiones y resultados de las negociaciones comerciales.
 
 ## 11. Respuesta propuesta
 
